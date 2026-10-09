@@ -1,0 +1,1160 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>AEDUCADO RESOURCE LIBRARY</title>
+  <!-- Browser Tab Favicon Logo -->
+  <link rel="icon" type="image/jpeg" href="LOGO.jpg">
+  <!-- Tailwind CSS CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <!-- Lucide Icons -->
+  <script src="https://unpkg.com/lucide@latest"></script>
+  <!-- Supabase JS Client CDN -->
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <!-- Google Fonts: Inter & JetBrains Mono -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+
+  <script>
+    tailwind.config = {
+      darkMode: 'class',
+      theme: {
+        extend: {
+          fontFamily: {
+            sans: ['Inter', 'sans-serif'],
+            mono: ['JetBrains Mono', 'monospace'],
+          },
+          colors: {
+            purpleSpace: {
+              950: '#080016', 900: '#110029', 850: '#1c0042', 800: '#2a005e',
+              700: '#3e008a', 600: '#5a00c7',
+            },
+            neonViolet: {
+              400: '#d184ff', 500: '#a23be6', 600: '#751bb3', glow: '#e0aaff'
+            },
+            thrustGold: {
+              400: '#ffaa00', 500: '#ff9e00', 600: '#cc7a00'
+            },
+            lavender: {
+              300: '#e2d1f0', 400: '#c5a3eb'
+            }
+          },
+          backgroundImage: {
+            'grid-pattern': "radial-gradient(rgba(162, 59, 230, 0.15) 1px, transparent 1px)",
+            'blueprint-lines': "linear-gradient(to right, rgba(162, 59, 230, 0.05) 1px, transparent 1px), linear-gradient(to bottom, rgba(162, 59, 230, 0.05) 1px, transparent 1px)"
+          }
+        }
+      }
+    }
+  </script>
+
+  <style>
+    ::-webkit-scrollbar { width: 6px; height: 6px; }
+    ::-webkit-scrollbar-track { background: #080016; }
+    ::-webkit-scrollbar-thumb { background: #3e008a; border-radius: 9999px; }
+    ::-webkit-scrollbar-thumb:hover { background: #a23be6; }
+
+    .tech-border { position: relative; }
+    .tech-border::before { content: ''; position: absolute; top: 0; left: 0; width: 6px; height: 6px; border-top: 1.5px solid #a23be6; border-left: 1.5px solid #a23be6; }
+    .tech-border::after { content: ''; position: absolute; bottom: 0; right: 0; width: 6px; height: 6px; border-bottom: 1.5px solid #a23be6; border-right: 1.5px solid #a23be6; }
+
+    .telemetry-pulse { animation: pulseGlow 2.5s infinite ease-in-out; }
+    @keyframes pulseGlow {
+      0%, 100% { opacity: 0.7; transform: scale(1); }
+      50% { opacity: 1; transform: scale(1.08); filter: drop-shadow(0 0 10px rgba(162, 59, 230, 0.8)); }
+    }
+
+    .animate-spin-reverse { animation: spin-reverse 1.5s linear infinite; }
+    @keyframes spin-reverse { from { transform: rotate(360deg); } to { transform: rotate(0deg); } }
+
+    .grid-bg { background-size: 24px 24px; }
+    .glass-panel { background: rgba(17, 0, 41, 0.65); backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px); border: 1px solid rgba(162, 59, 230, 0.2); }
+  </style>
+</head>
+<body class="bg-purpleSpace-950 text-slate-100 font-sans antialiased min-h-screen flex flex-col selection:bg-neonViolet-500/30 selection:text-neonViolet-400">
+
+  <!-- GLOBAL LOADER OVERLAY -->
+  <div id="global-loader" class="fixed inset-0 z-[100] bg-purpleSpace-950/90 backdrop-blur-md flex flex-col items-center justify-center transition-opacity duration-300 pointer-events-none opacity-0">
+      <div class="relative w-24 h-24 flex items-center justify-center">
+          <div class="absolute inset-0 rounded-full border-4 border-transparent border-t-neonViolet-500 border-b-neonViolet-500 animate-spin"></div>
+          <div class="absolute inset-2 rounded-full border-4 border-transparent border-l-thrustGold-500 border-r-thrustGold-500 animate-spin-reverse"></div>
+          <img src="LOGO.jpg" class="w-16 h-16 rounded-full object-cover border-2 border-neonViolet-500 relative z-10 telemetry-pulse" alt="Loading" onerror="this.src='data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSI0NSIgaGVpZ2h0PSI0NSI+PGNpcmNsZSBjeD0iMjIuNSIgY3k9IjIyLjUiIHI9IjIyLjUiIGZpbGw9IiM4YTJiZTIiLz48L3N2Zz4='">
+      </div>
+      <div class="mt-6 text-neonViolet-400 font-mono text-xs font-bold tracking-widest uppercase animate-pulse" id="loader-text">Syncing Live Database...</div>
+  </div>
+
+  <header class="sticky top-0 z-40 bg-purpleSpace-900/80 backdrop-blur-md border-b border-purpleSpace-800 shadow-[0_4px_30px_rgba(0,0,0,0.5)]">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="flex items-center justify-between h-20">
+        
+        <!-- Logo and System Info -->
+        <div class="flex items-center gap-4">
+          <div class="relative group cursor-pointer">
+            <div class="absolute inset-0 bg-neonViolet-500 rounded-full blur opacity-40 group-hover:opacity-75 transition duration-500"></div>
+            <img src="LOGO.jpg" alt="AEDUCADO Logo" onerror="this.src='data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSI0NSIgaGVpZ2h0PSI0NSI+PGNpcmNsZSBjeD0iMjIuNSIgY3k9IjIyLjUiIHI9IjIyLjUiIGZpbGw9IiM4YTJiZTIiLz48L3N2Zz4='" class="relative h-14 w-14 rounded-full border-2 border-neonViolet-500 shadow-[0_0_15px_rgba(162,59,230,0.4)] object-cover">
+          </div>
+          <div>
+            <div class="flex items-center gap-2">
+              <span class="font-black tracking-widest text-lg md:text-xl uppercase bg-clip-text text-transparent bg-gradient-to-r from-white via-lavender-300 to-neonViolet-400 drop-shadow-[0_0_8px_rgba(162,59,230,0.5)]">AEDUCADO RESOURCE LIBRARY</span>
+            </div>
+            <p class="text-[11px] text-lavender-400 hidden sm:block font-mono tracking-wide">Aerospace Engineering Students' Society</p>
+            <p class="text-[9px] text-neonViolet-400 hidden sm:block font-mono font-semibold tracking-widest uppercase">Batangas State University - TNEU</p>
+          </div>
+        </div>
+
+        <!-- Action Tools -->
+        <div class="flex items-center gap-2 sm:gap-3">
+          <!-- Cloud Drive Manager Trigger -->
+          <button id="btn-open-cloudmanager" class="flex items-center gap-2 text-xs font-mono font-medium px-3 py-2 rounded-lg bg-purpleSpace-850 hover:bg-purpleSpace-800 text-slate-200 border border-purpleSpace-700 hover:border-neonViolet-500/50 transition shadow-[0_0_10px_rgba(162,59,230,0.1)]">
+            <i data-lucide="hard-drive" class="w-4 h-4 text-thrustGold-400"></i>
+            <span class="hidden md:inline">Cloud Drives</span>
+            <span id="linked-drives-counter" class="px-1.5 py-0.2 rounded-full bg-thrustGold-500/20 text-thrustGold-400 border border-thrustGold-500/40 font-bold text-[10px]">0</span>
+          </button>
+
+          <!-- Direct Upload -->
+          <input type="file" id="direct-upload-input" class="hidden" multiple accept=".pdf,.doc,.docx,.ppt,.pptx,.xls,.xlsx,.py,.ipynb,.zip,.sldprt,.dwg">
+          <button id="btn-direct-upload" class="flex items-center gap-1.5 text-xs font-bold px-3 py-2 rounded-lg bg-purpleSpace-850 hover:bg-purpleSpace-800 text-neonViolet-300 border border-neonViolet-500/50 shadow-[0_0_10px_rgba(162,59,230,0.2)] transition font-mono">
+            <i data-lucide="upload" class="w-4 h-4"></i>
+            <span class="hidden sm:inline">Local Upload</span>
+          </button>
+
+          <!-- Submit Resource -->
+          <button id="btn-open-submit" class="flex items-center gap-1.5 text-xs font-bold px-4 py-2 rounded-lg bg-gradient-to-r from-neonViolet-500 to-purple-600 hover:from-neonViolet-400 hover:to-purple-500 text-white shadow-[0_0_15px_rgba(162,59,230,0.4)] transition font-mono border border-neonViolet-400/50">
+            <i data-lucide="plus-circle" class="w-4 h-4"></i>
+            <span class="hidden sm:inline">Submit Resource</span>
+          </button>
+        </div>
+
+      </div>
+    </div>
+  </header>
+
+  <section class="relative bg-purpleSpace-900 border-b border-purpleSpace-800 overflow-hidden py-10 shadow-[inset_0_-10px_30px_rgba(0,0,0,0.5)]">
+    <div class="absolute inset-0 bg-blueprint-lines grid-bg opacity-40 pointer-events-none"></div>
+    <div class="absolute right-0 top-0 w-1/2 h-full bg-gradient-to-l from-neonViolet-500/10 to-transparent blur-3xl pointer-events-none"></div>
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
+      <div class="flex flex-col md:flex-row md:items-center justify-between gap-6">
+        <div>
+          <div class="flex items-center gap-2 text-xs font-mono text-neonViolet-400 uppercase tracking-widest mb-2">
+            <span class="h-2 w-2 rounded-full bg-neonViolet-400 telemetry-pulse"></span>
+            AEDUCADO RESOURCE LIBRARY // Public Student Repository
+          </div>
+          <h1 class="text-3xl sm:text-4xl font-black tracking-tight text-white drop-shadow-[0_2px_4px_rgba(0,0,0,0.8)]">
+            Aerospace Engineering Repository
+          </h1>
+          <p class="text-sm text-lavender-300 mt-2 max-w-2xl leading-relaxed">
+            Syllabus-aligned supplementary materials shared across all students in real time, synced with public Supabase tables and academic drives.
+          </p>
+        </div>
+
+        <!-- Telemetry Stats Cards -->
+        <div class="grid grid-cols-3 gap-3 self-start md:self-auto font-mono">
+          <div class="glass-panel p-3 rounded-xl border border-neonViolet-500/30 text-center min-w-[95px] shadow-[0_0_15px_rgba(162,59,230,0.15)]">
+            <span class="block text-2xl font-bold text-neonViolet-400 drop-shadow-[0_0_5px_rgba(162,59,230,0.5)]" id="stat-total-docs">0</span>
+            <span class="text-[10px] text-lavender-400 uppercase tracking-wider">Catalog Files</span>
+          </div>
+          <div class="glass-panel p-3 rounded-xl border border-thrustGold-500/30 text-center min-w-[95px] shadow-[0_0_15px_rgba(255,170,0,0.15)]">
+            <span class="block text-2xl font-bold text-thrustGold-400 drop-shadow-[0_0_5px_rgba(255,170,0,0.5)]" id="stat-total-drives">4</span>
+            <span class="text-[10px] text-lavender-400 uppercase tracking-wider">Synced Drives</span>
+          </div>
+          <div class="glass-panel p-3 rounded-xl border border-neonViolet-500/30 text-center min-w-[95px] shadow-[0_0_15px_rgba(162,59,230,0.15)]">
+            <span class="block text-2xl font-bold text-white drop-shadow-[0_0_5px_rgba(255,255,255,0.5)]">100%</span>
+            <span class="text-[10px] text-lavender-400 uppercase tracking-wider">Public Realtime</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <main class="flex-1 max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-8">
+    
+    <!-- View Switcher Tabs -->
+    <div class="flex items-center justify-between mb-6 border-b border-purpleSpace-800 pb-4">
+      <div class="flex items-center gap-2">
+        <button id="tab-library" class="px-5 py-2.5 rounded-lg text-xs font-mono font-bold bg-neonViolet-500/20 text-neonViolet-400 border border-neonViolet-500/50 flex items-center gap-2 transition shadow-[0_0_10px_rgba(162,59,230,0.2)]">
+          <i data-lucide="library" class="w-4 h-4"></i>
+          <span>Curated Academic Library</span>
+        </button>
+        <button id="tab-drive" class="px-5 py-2.5 rounded-lg text-xs font-mono font-semibold bg-purpleSpace-900 text-lavender-400 hover:text-white border border-purpleSpace-800 flex items-center gap-2 transition">
+          <i data-lucide="hard-drive" class="w-4 h-4 text-thrustGold-400"></i>
+          <span>Cloud Drive Explorer</span>
+          <span id="drive-badge-count" class="px-1.5 py-0.2 rounded-full bg-thrustGold-500/20 text-thrustGold-400 text-[10px]">4</span>
+        </button>
+      </div>
+
+      <div class="hidden sm:flex items-center gap-2 text-xs font-mono text-lavender-400">
+        <i data-lucide="globe" class="w-4 h-4 text-thrustGold-400"></i>
+        <span>Public Feed: <strong class="text-white drop-shadow-[0_0_3px_rgba(255,255,255,0.5)]">Realtime Sync Active</strong></span>
+      </div>
+    </div>
+
+    <div id="view-library-container" class="grid grid-cols-1 lg:grid-cols-4 gap-8">
+      
+      <!-- SIDEBAR -->
+      <aside class="lg:col-span-1 space-y-6">
+        
+        <!-- Search bar -->
+        <div class="glass-panel p-4 rounded-xl border border-purpleSpace-800 shadow-lg">
+          <label class="block text-xs font-mono font-medium text-lavender-300 mb-2 uppercase tracking-wider">Search Resources</label>
+          <div class="relative">
+            <i data-lucide="search" class="w-4 h-4 text-lavender-400 absolute left-3 top-3 pointer-events-none"></i>
+            <input type="text" id="search-input" placeholder="Keyword, Navier-Stokes..." 
+                   class="w-full bg-purpleSpace-950/80 border border-purpleSpace-700 rounded-lg pl-9 pr-3 py-2 text-xs text-white placeholder-purpleSpace-700 focus:outline-none focus:border-neonViolet-400 focus:shadow-[0_0_10px_rgba(162,59,230,0.3)] transition font-mono">
+          </div>
+        </div>
+
+        <!-- Academic Subjects Directory -->
+        <div class="glass-panel rounded-xl border border-purpleSpace-800 p-4 shadow-lg">
+          <div class="flex items-center justify-between mb-3">
+            <h2 class="text-xs font-mono font-bold text-lavender-300 uppercase tracking-wider flex items-center gap-1.5">
+              <i data-lucide="book-open" class="w-4 h-4 text-neonViolet-400"></i>
+              Curriculum Subjects
+            </h2>
+            <button id="btn-reset-subjects" class="text-[11px] font-mono text-neonViolet-400 hover:text-white transition">Reset All</button>
+          </div>
+          <div class="space-y-2 max-h-72 overflow-y-auto pr-1" id="subject-nav">
+              <!-- Dynamically populated based on year selected -->
+          </div>
+        </div>
+
+        <!-- Resource Type Filters -->
+        <div class="glass-panel rounded-xl border border-purpleSpace-800 p-4 shadow-lg">
+          <h3 class="text-xs font-mono font-bold text-lavender-300 uppercase tracking-wider mb-3 flex items-center gap-1.5">
+            <i data-lucide="file-code" class="w-4 h-4 text-thrustGold-400"></i>
+            Resource Format
+          </h3>
+          <div class="space-y-2.5 text-xs" id="format-filters-container"></div>
+        </div>
+
+      </aside>
+
+      <!-- MAIN CONTENT -->
+      <section class="lg:col-span-3 space-y-6">
+        
+        <!-- Prominent Year Level Quick Filters -->
+        <div class="glass-panel rounded-xl border border-purpleSpace-800 p-2 flex flex-wrap items-center gap-2 shadow-md overflow-x-auto" id="year-quick-filters">
+          <span class="text-[11px] font-mono text-lavender-400 font-bold px-3 uppercase tracking-wider hidden sm:block">Academic Year:</span>
+          <button data-level="2nd Year" class="year-btn px-4 py-2 rounded-lg text-xs font-mono font-bold bg-purpleSpace-950/50 text-lavender-300 border border-purpleSpace-700 hover:bg-neonViolet-500/20 hover:border-neonViolet-500/50 transition">2nd Year</button>
+          <button data-level="3rd Year" class="year-btn px-4 py-2 rounded-lg text-xs font-mono font-bold bg-purpleSpace-950/50 text-lavender-300 border border-purpleSpace-700 hover:bg-neonViolet-500/20 hover:border-neonViolet-500/50 transition">3rd Year</button>
+          <button data-level="4th Year" class="year-btn px-4 py-2 rounded-lg text-xs font-mono font-bold bg-purpleSpace-950/50 text-lavender-300 border border-purpleSpace-700 hover:bg-neonViolet-500/20 hover:border-neonViolet-500/50 transition">4th Year</button>
+        </div>
+
+        <!-- Controls Bar -->
+        <div class="glass-panel rounded-xl border border-purpleSpace-800 p-4 flex flex-wrap items-center justify-between gap-4">
+          <div class="flex items-center gap-2 flex-wrap">
+            <span class="text-xs font-mono text-lavender-400">Filter Status:</span>
+            <div id="active-filter-tags" class="flex flex-wrap gap-1.5"></div>
+          </div>
+
+          <div class="flex items-center gap-3 ml-auto text-xs font-mono">
+            <span class="text-lavender-400 font-semibold" id="results-count-label">Showing 0 items</span>
+            <select id="sort-select" class="bg-purpleSpace-950 border border-purpleSpace-700 rounded-lg px-3 py-1.5 text-lavender-200 focus:outline-none focus:border-neonViolet-400 focus:shadow-[0_0_10px_rgba(162,59,230,0.3)]">
+              <option value="popular">Most Popular</option>
+              <option value="title-asc">Title (A-Z)</option>
+              <option value="level">Level (Intro to Grad)</option>
+            </select>
+          </div>
+        </div>
+
+        <!-- Resource Grid -->
+        <div id="resource-cards-grid" class="grid grid-cols-1 md:grid-cols-2 gap-5"></div>
+
+        <!-- Empty State -->
+        <div id="empty-state" class="hidden py-16 text-center bg-purpleSpace-900/40 rounded-2xl border border-dashed border-neonViolet-500/30">
+          <div class="w-14 h-14 mx-auto rounded-full bg-purpleSpace-800 flex items-center justify-center text-neonViolet-500 mb-4 shadow-[0_0_15px_rgba(162,59,230,0.2)]">
+            <i data-lucide="compass" class="w-7 h-7 animate-spin-slow"></i>
+          </div>
+          <h3 class="text-lg font-bold text-white drop-shadow-md">AEDUCADO is ready.</h3>
+          <p class="text-xs text-lavender-400 max-w-sm mx-auto mt-2 font-mono">The library is currently blank. Be the first to upload a local file or submit a document.</p>
+          <button id="btn-clear-all-filters" class="mt-5 px-5 py-2 rounded-lg bg-neonViolet-500/20 text-neonViolet-300 border border-neonViolet-500/50 text-xs font-mono hover:bg-neonViolet-500/30 hover:text-white transition shadow-[0_0_10px_rgba(162,59,230,0.3)]">
+            Reset All Filters
+          </button>
+        </div>
+
+      </section>
+
+    </div>
+
+    <div id="view-drive-container" class="hidden space-y-6">
+      
+      <!-- Connected Drives Header & Actions -->
+      <div class="glass-panel rounded-2xl border border-purpleSpace-800 p-6 flex flex-col md:flex-row items-start md:items-center justify-between gap-5 shadow-lg">
+        <div class="flex items-center gap-5">
+          <div class="w-14 h-14 rounded-xl bg-thrustGold-500/10 border border-thrustGold-500/40 flex items-center justify-center text-thrustGold-400 shadow-[0_0_15px_rgba(255,170,0,0.2)]">
+            <i data-lucide="cloud" class="w-8 h-8 drop-shadow-[0_0_5px_rgba(255,170,0,0.6)]"></i>
+          </div>
+          <div>
+            <h2 class="text-xl font-black text-white flex items-center gap-3 drop-shadow-md">
+              Cloud Storage Integration
+              <span class="text-[10px] font-mono px-2.5 py-0.5 rounded-full bg-thrustGold-500/20 text-thrustGold-400 border border-thrustGold-500/40 shadow-[0_0_5px_rgba(255,170,0,0.3)]">Public Supabase</span>
+            </h2>
+            <p class="text-xs text-lavender-300 font-mono mt-1">Directly access official BatStateU AEROESS folders or link external URLs.</p>
+          </div>
+        </div>
+
+        <div class="flex items-center gap-3">
+          <button id="btn-link-drive" class="flex items-center gap-2 px-4 py-2.5 rounded-xl bg-purpleSpace-800 hover:bg-purpleSpace-700 text-lavender-200 border border-neonViolet-500/30 hover:border-neonViolet-500 text-xs font-mono transition shadow-lg">
+            <i data-lucide="link" class="w-4 h-4 text-neonViolet-400"></i>
+            <span>Link Extra URL</span>
+          </button>
+          <button id="btn-sync-now" class="flex items-center gap-2 px-4 py-2.5 rounded-xl bg-gradient-to-r from-thrustGold-500 to-thrustGold-600 hover:from-thrustGold-400 hover:to-thrustGold-500 text-purpleSpace-950 font-bold text-xs font-mono transition shadow-[0_0_15px_rgba(255,170,0,0.5)]">
+            <i data-lucide="refresh-cw" class="w-4 h-4"></i>
+            <span>Sync Supabase</span>
+          </button>
+        </div>
+      </div>
+
+      <!-- Connected Drives Quick Picker Bar -->
+      <div id="linked-drives-list" class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-5">
+        <!-- Rendered dynamically -->
+      </div>
+    </div>
+
+  </main>
+
+  <!-- Local Upload Year Prompt Modal -->
+  <div id="upload-year-modal" class="fixed inset-0 z-50 bg-purpleSpace-950/90 backdrop-blur-md hidden flex items-center justify-center p-4">
+    <div class="bg-purpleSpace-900 border border-neonViolet-500/40 w-full max-w-md rounded-2xl shadow-[0_0_40px_rgba(162,59,230,0.2)] overflow-hidden tech-border relative p-6">
+      <div class="flex items-center gap-2 text-xs font-mono font-bold text-neonViolet-400 mb-2 tracking-wider">
+        <i data-lucide="folder-tree" class="w-4 h-4"></i>
+        <span>Public Upload Specification</span>
+      </div>
+      <h3 class="text-xl font-black text-white tracking-tight drop-shadow-md mb-2">Select Academic Year Level</h3>
+      <p class="text-xs text-lavender-400 mb-5 font-mono">Choose the year level to categorize your uploaded file(s) for all students:</p>
+
+      <div class="space-y-3 font-mono text-xs mb-6">
+        <button onclick="confirmLocalUploadYear('2nd Year')" class="w-full text-left p-3.5 rounded-xl bg-purpleSpace-950 border border-purpleSpace-700 hover:border-neonViolet-400 hover:bg-neonViolet-500/10 text-white font-bold flex items-center justify-between transition">
+          <span>2nd Year Curriculum</span>
+          <i data-lucide="chevron-right" class="w-4 h-4 text-neonViolet-400"></i>
+        </button>
+        <button onclick="confirmLocalUploadYear('3rd Year')" class="w-full text-left p-3.5 rounded-xl bg-purpleSpace-950 border border-purpleSpace-700 hover:border-neonViolet-400 hover:bg-neonViolet-500/10 text-white font-bold flex items-center justify-between transition">
+          <span>3rd Year Curriculum</span>
+          <i data-lucide="chevron-right" class="w-4 h-4 text-neonViolet-400"></i>
+        </button>
+        <button onclick="confirmLocalUploadYear('4th Year')" class="w-full text-left p-3.5 rounded-xl bg-purpleSpace-950 border border-purpleSpace-700 hover:border-neonViolet-400 hover:bg-neonViolet-500/10 text-white font-bold flex items-center justify-between transition">
+          <span>4th Year Curriculum</span>
+          <i data-lucide="chevron-right" class="w-4 h-4 text-neonViolet-400"></i>
+        </button>
+      </div>
+
+      <div class="flex justify-end pt-3 border-t border-purpleSpace-800">
+        <button type="button" onclick="cancelLocalUpload()" class="px-4 py-2 rounded-xl bg-purpleSpace-800 hover:bg-purpleSpace-700 text-lavender-300 font-bold text-xs font-mono transition">Cancel</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Delete Confirmation Modal -->
+  <div id="delete-confirm-modal" class="fixed inset-0 z-50 bg-purpleSpace-950/90 backdrop-blur-md hidden flex items-center justify-center p-4">
+    <div class="bg-purpleSpace-900 border border-red-500/40 w-full max-w-md rounded-2xl shadow-[0_0_40px_rgba(239,68,68,0.2)] overflow-hidden tech-border relative p-6">
+      <div class="flex items-center gap-2 text-xs font-mono font-bold text-red-400 mb-2 tracking-wider">
+        <i data-lucide="alert-triangle" class="w-4 h-4"></i>
+        <span>Public Feed Deletion Protocol</span>
+      </div>
+      <h3 class="text-xl font-black text-white tracking-tight drop-shadow-md mb-2">Delete Shared File</h3>
+      <p class="text-xs text-lavender-400 mb-6 font-mono">Are you sure you want to permanently remove <strong id="delete-target-title" class="text-white">this file</strong> for all students across the public feed?</p>
+
+      <div class="flex items-center justify-end gap-3 pt-3 border-t border-purpleSpace-800 text-xs font-mono">
+        <button type="button" onclick="closeDeleteModal()" class="px-4 py-2.5 rounded-xl bg-purpleSpace-800 hover:bg-purpleSpace-700 text-lavender-300 font-bold transition">Cancel</button>
+        <button type="button" id="btn-execute-delete" class="px-5 py-2.5 rounded-xl bg-gradient-to-r from-red-600 to-rose-600 hover:from-red-500 hover:to-rose-500 text-white font-bold transition shadow-[0_0_15px_rgba(239,68,68,0.4)]">Delete File</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Link Extra Drive Modal -->
+  <div id="link-drive-modal" class="fixed inset-0 z-50 bg-purpleSpace-950/90 backdrop-blur-md hidden flex items-center justify-center p-4 overflow-y-auto">
+    <div class="bg-purpleSpace-900 border border-thrustGold-500/40 w-full max-w-lg rounded-2xl shadow-[0_0_40px_rgba(255,170,0,0.2)] overflow-hidden tech-border my-8 relative">
+      <div class="bg-purpleSpace-850 p-6 border-b border-purpleSpace-700 flex items-start justify-between">
+        <div>
+          <div class="flex items-center gap-2 text-xs font-mono font-bold text-thrustGold-400 mb-1 tracking-wider">
+            <i data-lucide="folder-sync" class="w-4 h-4"></i>
+            <span>Supabase Cloud Pipeline</span>
+          </div>
+          <h3 class="text-2xl font-black text-white tracking-tight drop-shadow-md">Link Extra Drive</h3>
+          <p class="text-xs text-lavender-400 mt-1">Add a custom Google Drive URL to the public Supabase repository.</p>
+        </div>
+        <button id="btn-close-linkdrive" class="p-2 rounded-xl bg-purpleSpace-800 hover:bg-purpleSpace-700 text-lavender-400 hover:text-white transition shadow-inner">
+          <i data-lucide="x" class="w-5 h-5"></i>
+        </button>
+      </div>
+
+      <form id="link-drive-form" class="p-6 space-y-5 text-xs font-mono bg-purpleSpace-950/50">
+        <div>
+          <label class="block text-lavender-300 font-bold mb-1.5 uppercase tracking-wide">Drive Folder Name *</label>
+          <input type="text" id="ld-name" required placeholder="e.g. Avionics Study Group" class="w-full bg-purpleSpace-950 border border-purpleSpace-700 rounded-xl px-4 py-3 text-white placeholder-purpleSpace-600 focus:outline-none focus:border-thrustGold-400 focus:shadow-[0_0_10px_rgba(255,170,0,0.3)] transition">
+        </div>
+        <div>
+          <label class="block text-lavender-300 font-bold mb-1.5 uppercase tracking-wide">Folder URL *</label>
+          <input type="url" id="ld-url" required placeholder="https://drive.google.com/drive/folders/..." class="w-full bg-purpleSpace-950 border border-purpleSpace-700 rounded-xl px-4 py-3 text-white placeholder-purpleSpace-600 focus:outline-none focus:border-thrustGold-400 focus:shadow-[0_0_10px_rgba(255,170,0,0.3)] transition">
+        </div>
+        <div>
+          <label class="block text-lavender-300 font-bold mb-1.5 uppercase tracking-wide">Added By *</label>
+          <input type="text" id="ld-owner" required placeholder="Your Name" class="w-full bg-purpleSpace-950 border border-purpleSpace-700 rounded-xl px-4 py-3 text-white placeholder-purpleSpace-600 focus:outline-none focus:border-thrustGold-400 focus:shadow-[0_0_10px_rgba(255,170,0,0.3)] transition">
+        </div>
+
+        <div class="flex items-center justify-end gap-3 pt-4 border-t border-purpleSpace-800">
+          <button type="button" id="btn-cancel-linkdrive" class="px-5 py-2.5 rounded-xl bg-purpleSpace-800 hover:bg-purpleSpace-700 text-lavender-300 font-bold transition">Cancel</button>
+          <button type="submit" class="flex items-center gap-2 px-6 py-2.5 rounded-xl bg-gradient-to-r from-thrustGold-500 to-thrustGold-600 hover:from-thrustGold-400 hover:to-thrustGold-500 text-purpleSpace-950 font-black transition shadow-[0_0_15px_rgba(255,170,0,0.4)]">
+            <i data-lucide="cloud-plus" class="w-5 h-5"></i>
+            <span>Link Drive</span>
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- Submit Resource Modal -->
+  <div id="submit-modal" class="fixed inset-0 z-50 bg-purpleSpace-950/90 backdrop-blur-md hidden flex items-center justify-center p-4 overflow-y-auto">
+    <div class="bg-purpleSpace-900 border border-neonViolet-500/40 w-full max-w-2xl rounded-2xl shadow-[0_0_40px_rgba(162,59,230,0.2)] overflow-hidden tech-border my-8 relative">
+      <div class="bg-purpleSpace-850 p-6 border-b border-purpleSpace-700 flex items-start justify-between">
+        <div>
+          <div class="flex items-center gap-2 text-xs font-mono font-bold text-neonViolet-400 mb-1 tracking-wider">
+            <i data-lucide="upload-cloud" class="w-4 h-4"></i>
+            <span>Public Ingestion Pipeline</span>
+          </div>
+          <h3 class="text-2xl font-black text-white tracking-tight drop-shadow-md">Submit Academic Material</h3>
+          <p class="text-xs text-lavender-400 mt-1">Deposit verified aerospace materials into the shared public student feed.</p>
+        </div>
+        <button id="btn-close-submit" class="p-2 rounded-xl bg-purpleSpace-800 hover:bg-purpleSpace-700 text-lavender-400 hover:text-white transition shadow-inner">
+          <i data-lucide="x" class="w-5 h-5"></i>
+        </button>
+      </div>
+
+      <form id="resource-submit-form" class="p-6 space-y-5 text-xs font-mono bg-purpleSpace-950/50">
+        <div>
+          <label class="block text-lavender-300 font-bold mb-1.5 uppercase tracking-wide">Resource Title *</label>
+          <input type="text" id="sub-title" required placeholder="e.g. Oblique Shock Wave Solver Notes"
+                 class="w-full bg-purpleSpace-950 border border-purpleSpace-700 rounded-xl px-4 py-3 text-white placeholder-purpleSpace-600 focus:outline-none focus:border-neonViolet-400 focus:shadow-[0_0_10px_rgba(162,59,230,0.3)] transition">
+        </div>
+
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-5">
+          <div>
+            <label class="block text-lavender-300 font-bold mb-1.5 uppercase tracking-wide">Difficulty Level *</label>
+            <select id="sub-level" required class="w-full bg-purpleSpace-950 border border-purpleSpace-700 rounded-xl px-4 py-3 text-white focus:outline-none focus:border-neonViolet-400 focus:shadow-[0_0_10px_rgba(162,59,230,0.3)] transition appearance-none">
+              <option value="2nd Year">2nd Year</option>
+              <option value="3rd Year">3rd Year</option>
+              <option value="4th Year">4th Year</option>
+            </select>
+          </div>
+          <div>
+            <label class="block text-lavender-300 font-bold mb-1.5 uppercase tracking-wide">Course Subject *</label>
+            <select id="sub-subject" required class="w-full bg-purpleSpace-950 border border-purpleSpace-700 rounded-xl px-4 py-3 text-white focus:outline-none focus:border-neonViolet-400 focus:shadow-[0_0_10px_rgba(162,59,230,0.3)] transition appearance-none">
+              <!-- Dynamically populated based on Year level -->
+            </select>
+          </div>
+        </div>
+
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-5">
+          <div>
+            <label class="block text-lavender-300 font-bold mb-1.5 uppercase tracking-wide">Resource Format *</label>
+            <select id="sub-format" required class="w-full bg-purpleSpace-950 border border-purpleSpace-700 rounded-xl px-4 py-3 text-white focus:outline-none focus:border-neonViolet-400 focus:shadow-[0_0_10px_rgba(162,59,230,0.3)] transition appearance-none">
+              <option value="notes">Lecture Notes</option>
+              <option value="cheat-sheet">Formula Book & Cheat Sheet</option>
+              <option value="code">Open-Source Code & Simulator</option>
+              <option value="exam">Exam Problem Sets & Solutions</option>
+              <option value="report">Technical Report / Whitepaper</option>
+            </select>
+          </div>
+          <div>
+            <label class="block text-lavender-300 font-bold mb-1.5 uppercase tracking-wide">Author / Contributor *</label>
+            <input type="text" id="sub-author" required placeholder="e.g. BatStateU AEROESS / Student Name"
+                   class="w-full bg-purpleSpace-950 border border-purpleSpace-700 rounded-xl px-4 py-3 text-white placeholder-purpleSpace-600 focus:outline-none focus:border-neonViolet-400 focus:shadow-[0_0_10px_rgba(162,59,230,0.3)] transition">
+          </div>
+        </div>
+
+        <div>
+          <label class="block text-lavender-300 font-bold mb-1.5 uppercase tracking-wide">Cloud File URL (Optional)</label>
+          <input type="url" id="sub-cloudurl" placeholder="https://drive.google.com/file/d/..."
+                 class="w-full bg-purpleSpace-950 border border-purpleSpace-700 rounded-xl px-4 py-3 text-white placeholder-purpleSpace-600 focus:outline-none focus:border-neonViolet-400 focus:shadow-[0_0_10px_rgba(162,59,230,0.3)] transition">
+        </div>
+
+        <div id="submit-feedback" class="hidden p-4 rounded-xl text-xs font-mono font-bold"></div>
+
+        <div class="flex items-center justify-end gap-3 pt-4 border-t border-purpleSpace-800">
+          <button type="button" id="btn-cancel-submit" class="px-5 py-2.5 rounded-xl bg-purpleSpace-800 hover:bg-purpleSpace-700 text-lavender-300 font-bold transition">
+            Cancel
+          </button>
+          <button type="submit" class="flex items-center gap-2 px-6 py-2.5 rounded-xl bg-gradient-to-r from-neonViolet-500 to-purple-600 hover:from-neonViolet-400 hover:to-purple-500 text-white font-bold transition shadow-[0_0_15px_rgba(162,59,230,0.4)] border border-neonViolet-400/50">
+            <i data-lucide="check" class="w-5 h-5"></i>
+            <span>Share to Public Feed</span>
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <div id="toast-notify" class="fixed bottom-8 left-8 z-50 glass-panel border border-neonViolet-500/50 text-white px-5 py-4 rounded-xl shadow-[0_0_20px_rgba(162,59,230,0.4)] flex items-center gap-3 font-mono text-sm translate-y-20 opacity-0 pointer-events-none transition-all duration-300">
+    <i data-lucide="globe" class="w-5 h-5 text-neonViolet-400"></i>
+    <span id="toast-message" class="font-bold tracking-wide">Message text</span>
+  </div>
+
+  <!-- AEROSPACE GIZMO FLOATING PANEL -->
+  <button id="btn-gizmo-fab" class="fixed bottom-8 right-8 z-50 w-14 h-14 rounded-full bg-purpleSpace-950 border border-neonViolet-400 shadow-[0_0_20px_rgba(162,59,230,0.6)] flex items-center justify-center text-neonViolet-400 hover:bg-neonViolet-500 hover:text-white hover:scale-105 transition-all group">
+    <i data-lucide="satellite" class="w-6 h-6 group-hover:animate-spin-slow drop-shadow-[0_0_5px_rgba(162,59,230,0.8)]"></i>
+  </button>
+
+  <div id="gizmo-panel" class="fixed bottom-28 right-8 z-50 w-80 sm:w-96 glass-panel border border-neonViolet-500/50 rounded-2xl shadow-[0_0_40px_rgba(162,59,230,0.4)] transform translate-y-10 opacity-0 pointer-events-none transition-all duration-300 overflow-hidden flex flex-col">
+    <div class="p-4 bg-purpleSpace-900 border-b border-purpleSpace-700 flex justify-between items-center relative overflow-hidden">
+      <div class="absolute inset-0 bg-gradient-to-r from-neonViolet-500/10 to-transparent pointer-events-none"></div>
+      <div class="flex items-center gap-2 text-neonViolet-400 font-mono font-bold text-sm uppercase tracking-widest relative z-10">
+        <i data-lucide="cpu" class="w-5 h-5 drop-shadow-[0_0_5px_rgba(162,59,230,0.6)]"></i>
+        AeroGiz Diagnostic
+      </div>
+      <button id="btn-close-gizmo" class="text-lavender-400 hover:text-white relative z-10 transition">
+        <i data-lucide="chevron-down" class="w-5 h-5"></i>
+      </button>
+    </div>
+    <div class="p-5 space-y-5 font-mono text-xs max-h-[60vh] overflow-y-auto bg-purpleSpace-950/60 relative min-h-[300px]">
+      
+      <!-- VIEW 1: Dynamic Smart Quiz Selector -->
+      <div id="gizmo-view-select" class="space-y-3">
+        <!-- Rendered dynamically -->
+      </div>
+
+      <!-- VIEW 2: Active Quiz -->
+      <div id="gizmo-view-quiz" class="hidden space-y-4">
+        <div class="flex justify-between items-center text-[10px] text-lavender-400 font-bold tracking-widest uppercase">
+          <span id="quiz-progress" class="bg-purpleSpace-900 px-2 py-1 rounded border border-purpleSpace-800">Q 1/3</span>
+          <span class="text-thrustGold-400 border border-thrustGold-500/30 px-2 py-1 rounded bg-thrustGold-500/10 font-black">SMART QUIZ</span>
+        </div>
+        <p id="quiz-question-text" class="text-[13px] text-white font-bold leading-relaxed drop-shadow-md py-2 border-l-2 border-neonViolet-400 pl-3"></p>
+        <div id="quiz-options-container" class="space-y-2 mt-4"></div>
+      </div>
+
+      <!-- VIEW 3: Results -->
+      <div id="gizmo-view-result" class="hidden text-center py-6 space-y-4">
+        <div class="w-16 h-16 mx-auto rounded-full bg-thrustGold-500/20 flex items-center justify-center border border-thrustGold-500/50 shadow-[0_0_15px_rgba(255,170,0,0.3)]">
+          <i data-lucide="award" class="w-8 h-8 text-thrustGold-400 drop-shadow-md"></i>
+        </div>
+        <div>
+          <h4 class="text-lg font-black text-white drop-shadow-md">Diagnostic Complete</h4>
+          <p class="text-lavender-300 mt-1">Score: <span id="quiz-score-display" class="text-thrustGold-400 font-black text-xl px-1"></span></p>
+        </div>
+        <div id="quiz-feedback" class="bg-purpleSpace-900 p-3 rounded-lg border border-purpleSpace-800 text-[11px] text-neonViolet-300 font-bold tracking-wide mt-2 shadow-inner"></div>
+        <button onclick="resetAeroGiz()" class="mt-4 w-full bg-purpleSpace-800 hover:bg-purpleSpace-700 border border-purpleSpace-700 text-white p-3 rounded-xl transition shadow-md font-bold flex justify-center items-center gap-2 group text-xs uppercase tracking-wider">
+          <i data-lucide="rotate-ccw" class="w-4 h-4 text-lavender-400 group-hover:-rotate-90 transition-transform"></i> Retake / Re-scan
+        </button>
+      </div>
+
+    </div>
+  </div>
+
+  <script>
+    // --- SUPABASE CONFIGURATION ---
+    const SUPABASE_URL = 'https://YOUR_PROJECT_ID.supabase.co'; // Replace with your actual Supabase Project URL
+    const SUPABASE_ANON_KEY = 'sb_publishable_feMkzWIL2u7oFxosToAFIg_EJQkAxg3';
+
+    // Initialize the Supabase client
+    const supabaseClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+
+    // Global Loader Function
+    function triggerLoader(callback, delay = 800) {
+      const loader = document.getElementById('global-loader');
+      loader.classList.remove('opacity-0', 'pointer-events-none');
+      setTimeout(() => {
+        if (callback) callback();
+        setTimeout(() => loader.classList.add('opacity-0', 'pointer-events-none'), 300);
+      }, delay);
+    }
+
+    // Official BatStateU AEROESS Drive Architecture
+    const officialAeroessDrives = [
+      { id: 'drive-main', name: 'AEDUCADO Main Archive', folderUrl: 'https://drive.google.com/drive/folders/1nAnexUfr3iJT24Pn6ns2TOcYxTGUAyAz?usp=drive_link', owner: 'AEROESS Admin', modified: 'System Core' },
+      { id: 'drive-4th-year', name: '4th Year Repository', folderUrl: 'https://drive.google.com/drive/folders/1batHO2v2HHELlBvzSV-Hu1YEe_gLilDP?usp=sharing', owner: 'AEROESS Admin', modified: 'System Core' },
+      { id: 'drive-3rd-year', name: '3rd Year Repository', folderUrl: 'https://drive.google.com/drive/folders/1vfVNoa5qrDvRSZHudbGeA_-r3AoQOh2e?usp=sharing', owner: 'AEROESS Admin', modified: 'System Core' },
+      { id: 'drive-2nd-year', name: '2nd Year Repository', folderUrl: 'https://drive.google.com/drive/folders/1k-822nN2CnC8XTAm3-UgmPJFgAUmp7Re?usp=sharing', owner: 'AEROESS Admin', modified: 'System Core' }
+    ];
+
+    // Data Structure strictly enforcing subjects
+    const academicCurriculumMapping = {
+      "2nd Year": ["Statics of Rigid Bodies", "Linear Algebra for AI", "Fluid Mechanics", "Electronics Circuits: Device and Analysis", "Differential Equation", "Basic Occupational Safety and Health", "Basic Electrical Engineering", "Aerospace Engineering Orientation", "Thermodynamics"],
+      "3rd Year": ["Aerodynamics", "Design of Aerospace Structure", "Electives 1", "Finite Elements Analysis", "Introduction to Avionics Integration", "Jet and Rocket Propulsion", "Sample Course 1", "Spacecraft and Aircraft Sensors and Instrumentation"],
+      "4th Year": ["Space Mission Design", "Orbital Mechanics", "Flight Dynamics and Control", "Aeroelasticity", "Aerospace Senior Design Project"]
+    };
+
+    const formats = [
+      { id: 'notes', label: 'Lecture Notes & Syllabus', icon: 'book-open' },
+      { id: 'cheat-sheet', label: 'Formula Books & Quick Sheets', icon: 'variable' },
+      { id: 'code', label: 'Simulators & Code', icon: 'terminal' },
+      { id: 'exam', label: 'Exam Problem Sets & Solutions', icon: 'file-text' },
+      { id: 'report', label: 'SP Reports & Technical Papers', icon: 'file-check' }
+    ];
+    const levels = ['2nd Year', '3rd Year', '4th Year'];
+
+    let connectedDrives = [];
+    let resources = [];
+    let selectedSubject = 'all';
+    let selectedFormats = new Set();
+    let selectedLevels = new Set();
+    let searchQuery = '';
+    let sortMode = 'popular';
+    let pendingLocalFiles = null;
+    let resourceToDeleteId = null;
+
+    async function initState() {
+      triggerLoader(async () => {
+        try {
+          // 1. Fetch Public Shared Resources from Supabase 'resources' table
+          const { data: dbResources, error: resError } = await supabaseClient
+            .from('resources')
+            .select('*')
+            .order('created_at', { ascending: false });
+
+          if (resError) throw resError;
+          resources = dbResources && dbResources.length > 0 ? dbResources : [];
+
+          // 2. Fetch Connected Drives from Supabase 'custom_drives' table
+          const { data: dbDrives, error: driveError } = await supabaseClient
+            .from('custom_drives')
+            .select('*');
+
+          if (driveError) throw driveError;
+          
+          if (dbDrives && dbDrives.length > 0) {
+            connectedDrives = dbDrives;
+          } else {
+            connectedDrives = [...officialAeroessDrives];
+            for (const drive of connectedDrives) {
+              await supabaseClient.from('custom_drives').upsert([drive]);
+            }
+          }
+        } catch (err) {
+          console.error('Supabase fetch warning:', err.message);
+          showToast('Offline mode: Loaded local state fallback.');
+          resources = JSON.parse(localStorage.getItem('aeducado_db_resources') || '[]');
+          connectedDrives = JSON.parse(localStorage.getItem('aeducado_db_drives') || '[]');
+          if (connectedDrives.length === 0) connectedDrives = [...officialAeroessDrives];
+        }
+
+        // 3. Initialize UI elements
+        updateDisciplineCounts();
+        renderSubjectNav();
+        renderFilterControls();
+        renderResourceGrid();
+        renderCloudManagerStats();
+        renderDriveExplorer();
+        updateFormSubjectDropdown('2nd Year');
+
+        // 4. Setup Supabase Realtime Subscription for Live Public Feed Syncing Across All Students
+        supabaseClient
+          .channel('public-resources-feed')
+          .on('postgres_changes', { event: '*', schema: 'public', table: 'resources' }, payload => {
+            if (payload.eventType === 'INSERT') {
+              if (!resources.some(r => r.id === payload.new.id)) {
+                resources.unshift(payload.new);
+                updateDisciplineCounts();
+                renderResourceGrid();
+                showToast(`New shared file: "${payload.new.title}"`);
+              }
+            } else if (payload.eventType === 'DELETE') {
+              resources = resources.filter(r => r.id !== payload.old.id);
+              updateDisciplineCounts();
+              renderResourceGrid();
+            }
+          })
+          .subscribe();
+
+      }, 1000);
+    }
+
+    async function saveResourcesToStorage() {
+      localStorage.setItem('aeducado_db_resources', JSON.stringify(resources));
+    }
+
+    async function saveDrivesToStorage() {
+      localStorage.setItem('aeducado_db_drives', JSON.stringify(connectedDrives));
+    }
+
+    function updateDisciplineCounts() {
+      document.getElementById('stat-total-docs').innerText = resources.length;
+    }
+
+    // View Switching Tabs
+    const tabLibrary = document.getElementById('tab-library');
+    const tabDrive = document.getElementById('tab-drive');
+    const viewLibrary = document.getElementById('view-library-container');
+    const viewDrive = document.getElementById('view-drive-container');
+
+    tabLibrary.addEventListener('click', () => {
+      triggerLoader(() => {
+        tabLibrary.className = 'px-5 py-2.5 rounded-lg text-xs font-mono font-bold bg-neonViolet-500/20 text-neonViolet-400 border border-neonViolet-500/50 flex items-center gap-2 transition shadow-[0_0_10px_rgba(162,59,230,0.2)]';
+        tabDrive.className = 'px-5 py-2.5 rounded-lg text-xs font-mono font-semibold bg-purpleSpace-900 text-lavender-400 hover:text-white border border-purpleSpace-800 flex items-center gap-2 transition';
+        viewLibrary.classList.remove('hidden');
+        viewDrive.classList.add('hidden');
+      });
+    });
+
+    tabDrive.addEventListener('click', () => {
+      triggerLoader(() => {
+        tabDrive.className = 'px-5 py-2.5 rounded-lg text-xs font-mono font-bold bg-thrustGold-500/20 text-thrustGold-400 border border-thrustGold-500/50 flex items-center gap-2 transition shadow-[0_0_10px_rgba(255,170,0,0.2)]';
+        tabLibrary.className = 'px-5 py-2.5 rounded-lg text-xs font-mono font-semibold bg-purpleSpace-900 text-lavender-400 hover:text-white border border-purpleSpace-800 flex items-center gap-2 transition';
+        viewDrive.classList.remove('hidden');
+        viewLibrary.classList.add('hidden');
+        renderDriveExplorer();
+      });
+    });
+
+    // Sidebar: Curriculum Subjects Directory
+    function renderSubjectNav() {
+      const nav = document.getElementById('subject-nav');
+      let availableSubjects = [];
+      
+      if (selectedLevels.size === 0) {
+           Object.values(academicCurriculumMapping).forEach(arr => availableSubjects.push(...arr));
+      } else {
+           selectedLevels.forEach(lvl => {
+               if(academicCurriculumMapping[lvl]) availableSubjects.push(...academicCurriculumMapping[lvl]);
+           });
+      }
+      
+      availableSubjects = [...new Set(availableSubjects)].sort();
+
+      let html = `
+        <button data-subject="all" class="w-full text-left px-3 py-2 rounded-lg border text-[11px] font-mono transition mb-1 ${selectedSubject === 'all' ? 'bg-neonViolet-500/20 border-neonViolet-500 text-neonViolet-300 font-bold' : 'bg-purpleSpace-950/50 border-purpleSpace-800 text-lavender-300 hover:bg-purpleSpace-800 hover:text-white'}">
+          All Subjects
+        </button>
+      `;
+
+      availableSubjects.forEach(sub => {
+          const isActive = selectedSubject === sub;
+          const activeClass = isActive ? 'bg-neonViolet-500/20 border-neonViolet-500 text-neonViolet-300 font-bold' : 'bg-transparent border-transparent text-lavender-300 hover:bg-purpleSpace-800 hover:text-white';
+          html += `
+            <button data-subject="${sub}" class="w-full text-left px-3 py-2 rounded-lg border text-[10px] font-mono transition truncate mb-1 ${activeClass}" title="${sub}">
+              ${sub}
+            </button>
+          `;
+      });
+      nav.innerHTML = html;
+
+      nav.querySelectorAll('button').forEach(btn => {
+          btn.addEventListener('click', () => {
+              triggerLoader(() => {
+                  selectedSubject = btn.dataset.subject;
+                  renderSubjectNav();
+                  renderResourceGrid();
+              }, 400);
+          });
+      });
+    }
+
+    function renderFilterControls() {
+      const formatContainer = document.getElementById('format-filters-container');
+      formatContainer.innerHTML = formats.map(f => {
+        const isChecked = selectedFormats.has(f.id);
+        return `
+          <label class="flex items-center justify-between text-lavender-200 hover:text-white cursor-pointer select-none">
+            <span class="flex items-center gap-2.5">
+              <input type="checkbox" value="${f.id}" class="format-checkbox rounded border-purpleSpace-700 bg-purpleSpace-950 text-neonViolet-500 focus:ring-neonViolet-500 focus:ring-2 focus:ring-offset-0 focus:ring-offset-purpleSpace-950 w-4 h-4" ${isChecked ? 'checked' : ''}>
+              <i data-lucide="${f.icon}" class="w-4 h-4 text-lavender-400"></i>
+              <span class="font-medium">${f.label}</span>
+            </span>
+          </label>
+        `;
+      }).join('');
+
+      document.querySelectorAll('.format-checkbox').forEach(cb => {
+        cb.addEventListener('change', (e) => {
+          triggerLoader(() => {
+            if (e.target.checked) selectedFormats.add(e.target.value);
+            else selectedFormats.delete(e.target.value);
+            renderResourceGrid();
+          }, 300);
+        });
+      });
+
+      document.querySelectorAll('.year-btn').forEach(btn => {
+        btn.addEventListener('click', (e) => {
+          triggerLoader(() => {
+            const level = e.target.dataset.level;
+            if (selectedLevels.has(level)) selectedLevels.delete(level);
+            else selectedLevels.add(level);
+            updateQuickFilterUI();
+            renderSubjectNav();
+            renderResourceGrid();
+          }, 400);
+        });
+      });
+      lucide.createIcons();
+    }
+
+    function updateQuickFilterUI() {
+      document.querySelectorAll('.year-btn').forEach(btn => {
+        const level = btn.dataset.level;
+        if (selectedLevels.has(level)) {
+          btn.classList.remove('bg-purpleSpace-950/50', 'text-lavender-300', 'border-purpleSpace-700');
+          btn.classList.add('bg-neonViolet-500/20', 'text-neonViolet-300', 'border-neonViolet-500/50', 'shadow-[inset_0_0_10px_rgba(162,59,230,0.3)]');
+        } else {
+          btn.classList.add('bg-purpleSpace-950/50', 'text-lavender-300', 'border-purpleSpace-700');
+          btn.classList.remove('bg-neonViolet-500/20', 'text-neonViolet-300', 'border-neonViolet-500/50', 'shadow-[inset_0_0_10px_rgba(162,59,230,0.3)]');
+        }
+      });
+    }
+
+    function getFilteredResources() {
+      return resources.filter(res => {
+        if (selectedSubject !== 'all' && res.subject !== selectedSubject) return false;
+        if (selectedFormats.size > 0 && !selectedFormats.has(res.format)) return false;
+        if (selectedLevels.size > 0 && !selectedLevels.has(res.level)) return false;
+        if (searchQuery.trim() !== '') {
+          const q = searchQuery.toLowerCase();
+          return res.title.toLowerCase().includes(q) || res.subject.toLowerCase().includes(q) || res.author.toLowerCase().includes(q);
+        }
+        return true;
+      }).sort((a, b) => {
+        if (sortMode === 'popular') return (b.downloads || 0) - (a.downloads || 0);
+        if (sortMode === 'title-asc') return a.title.localeCompare(b.title);
+        if (sortMode === 'level') return a.level.localeCompare(b.level);
+        return 0;
+      });
+    }
+
+    function renderResourceGrid() {
+      const list = getFilteredResources();
+      const grid = document.getElementById('resource-cards-grid');
+      const emptyState = document.getElementById('empty-state');
+      document.getElementById('results-count-label').innerText = `Showing ${list.length} item${list.length === 1 ? '' : 's'}`;
+
+      if (list.length === 0) {
+        grid.innerHTML = '';
+        emptyState.classList.remove('hidden');
+      } else {
+        emptyState.classList.add('hidden');
+        grid.innerHTML = list.map(item => `
+            <div class="group glass-panel hover:bg-purpleSpace-850 rounded-2xl border border-purpleSpace-800 hover:border-neonViolet-500/60 p-5 sm:p-6 flex flex-col justify-between transition-all duration-300 shadow-lg relative overflow-hidden">
+              <div class="absolute inset-0 bg-gradient-to-br from-neonViolet-500/5 to-transparent opacity-0 group-hover:opacity-100 transition duration-300 pointer-events-none"></div>
+              
+              <div class="relative z-10">
+                <div class="flex items-center justify-between gap-2 mb-3 font-mono text-[11px]">
+                  <div class="flex items-center gap-2">
+                    <span class="px-2.5 py-1 rounded bg-neonViolet-500/15 text-neonViolet-300 border border-neonViolet-500/40 font-bold tracking-wider truncate max-w-[150px]" title="${item.subject}">${item.subject}</span>
+                    <span class="px-2 py-1 rounded bg-purpleSpace-900 border border-purpleSpace-800 text-lavender-400 text-[10px] font-bold">${item.level}</span>
+                  </div>
+                  <button onclick="promptDeleteResource('${item.id}', '${item.title.replace(/'/g, "\\'")}')" class="text-lavender-400 hover:text-red-400 p-1.5 rounded-lg bg-purpleSpace-950/50 hover:bg-red-500/10 border border-purpleSpace-800 hover:border-red-500/40 transition" title="Delete File">
+                    <i data-lucide="trash-2" class="w-3.5 h-3.5"></i>
+                  </button>
+                </div>
+
+                <h3 class="text-base font-black text-white group-hover:text-neonViolet-300 transition line-clamp-2 leading-snug drop-shadow-sm">${item.title}</h3>
+                <p class="text-[11px] text-lavender-400 font-mono mt-2 flex items-center gap-1.5 font-bold">
+                  <i data-lucide="user-check" class="w-3.5 h-3.5 text-neonViolet-500"></i>
+                  <span class="truncate">${item.author}</span>
+                </p>
+                <div class="flex flex-wrap gap-1.5 mt-4">
+                  <span class="text-[10px] font-mono font-bold px-2 py-1 rounded bg-purpleSpace-950/60 text-lavender-300 border border-purpleSpace-700 uppercase">${item.format}</span>
+                </div>
+              </div>
+
+              <div class="mt-5 pt-4 border-t border-purpleSpace-700/80 flex items-center justify-between text-xs font-mono relative z-10">
+                <div class="flex items-center gap-2.5 text-lavender-400 text-[11px] font-bold">
+                  <span class="flex items-center gap-1 text-thrustGold-400"><i data-lucide="globe" class="w-3.5 h-3.5"></i>Public Feed</span>
+                </div>
+                ${item.cloudUrl || item.cloud_url ? `<a href="${item.cloudUrl || item.cloud_url}" target="_blank" class="px-3 py-1.5 rounded-lg bg-purpleSpace-800 border border-purpleSpace-700 hover:bg-neonViolet-500 hover:border-neonViolet-400 text-lavender-200 hover:text-white font-bold transition text-xs flex items-center gap-1.5 shadow-sm group-hover:shadow-[0_0_10px_rgba(162,59,230,0.5)]"><span>View File</span><i data-lucide="arrow-up-right" class="w-3.5 h-3.5"></i></a>` : `<span class="px-3 py-1.5 rounded-lg bg-purpleSpace-900 text-purpleSpace-600 font-bold text-xs">Shared File</span>`}
+              </div>
+            </div>
+        `).join('');
+      }
+      lucide.createIcons();
+    }
+
+    function renderCloudManagerStats() {
+      document.getElementById('stat-total-drives').innerText = connectedDrives.length;
+      document.getElementById('linked-drives-counter').innerText = connectedDrives.length;
+      document.getElementById('drive-badge-count').innerText = connectedDrives.length;
+    }
+
+    function renderDriveExplorer() {
+      const drivesListContainer = document.getElementById('linked-drives-list');
+      drivesListContainer.innerHTML = connectedDrives.map(d => `
+        <div class="glass-panel p-4 rounded-xl border border-purpleSpace-800 hover:border-thrustGold-500/50 transition flex flex-col justify-between gap-3 shadow-lg group">
+          <div class="flex items-start gap-3">
+            <div class="w-10 h-10 rounded-xl bg-thrustGold-500/10 text-thrustGold-400 border border-thrustGold-500/30 flex items-center justify-center flex-shrink-0 shadow-inner group-hover:bg-thrustGold-500/20 transition">
+              <i data-lucide="folder-git-2" class="w-5 h-5 drop-shadow-[0_0_3px_rgba(255,170,0,0.5)]"></i>
+            </div>
+            <div>
+              <h4 class="text-xs font-black text-white leading-tight">${d.name}</h4>
+              <p class="text-[10px] text-lavender-400 font-mono mt-1">${d.owner}</p>
+            </div>
+          </div>
+          <a href="${d.folderUrl || d.folder_url}" target="_blank" class="w-full mt-2 flex justify-center items-center gap-2 py-2 rounded-lg bg-purpleSpace-850 hover:bg-thrustGold-500 hover:text-purpleSpace-950 text-thrustGold-400 font-bold text-[11px] font-mono transition border border-thrustGold-500/30">
+            <span>Open Google Drive</span> <i data-lucide="external-link" class="w-3.5 h-3.5"></i>
+          </a>
+        </div>
+      `).join('');
+      lucide.createIcons();
+    }
+
+    function updateFormSubjectDropdown(yearLevel) {
+      const subSelect = document.getElementById('sub-subject');
+      const subjects = academicCurriculumMapping[yearLevel] || [];
+      subSelect.innerHTML = subjects.map(s => `<option value="${s}">${s}</option>`).join('');
+    }
+
+    document.getElementById('sub-level').addEventListener('change', (e) => {
+      updateFormSubjectDropdown(e.target.value);
+    });
+
+    document.getElementById('search-input').addEventListener('input', (e) => {
+      searchQuery = e.target.value;
+      renderResourceGrid();
+    });
+
+    document.getElementById('sort-select').addEventListener('change', (e) => {
+      triggerLoader(() => { sortMode = e.target.value; renderResourceGrid(); }, 300);
+    });
+
+    document.getElementById('btn-reset-subjects').addEventListener('click', () => {
+      triggerLoader(() => { selectedSubject = 'all'; renderSubjectNav(); renderResourceGrid(); }, 300);
+    });
+
+    document.getElementById('btn-clear-all-filters').addEventListener('click', () => {
+      triggerLoader(() => {
+        selectedSubject = 'all'; selectedFormats.clear(); selectedLevels.clear(); searchQuery = '';
+        document.getElementById('search-input').value = '';
+        updateQuickFilterUI(); renderSubjectNav(); renderFilterControls(); renderResourceGrid();
+      }, 500);
+    });
+
+    // Delete Modal Logic
+    window.promptDeleteResource = function(id, title) {
+      resourceToDeleteId = id;
+      document.getElementById('delete-target-title').innerText = title;
+      document.getElementById('delete-confirm-modal').classList.remove('hidden');
+    };
+
+    window.closeDeleteModal = function() {
+      resourceToDeleteId = null;
+      document.getElementById('delete-confirm-modal').classList.add('hidden');
+    };
+
+    document.getElementById('btn-execute-delete').addEventListener('click', async () => {
+      if(!resourceToDeleteId) return;
+      const targetId = resourceToDeleteId;
+      closeDeleteModal();
+
+      triggerLoader(async () => {
+        resources = resources.filter(r => r.id !== targetId);
+        saveResourcesToStorage();
+        updateDisciplineCounts();
+        renderResourceGrid();
+
+        try {
+          await supabaseClient.from('resources').delete().eq('id', targetId);
+        } catch(err) {
+          console.error('Supabase delete warning:', err);
+        }
+
+        showToast('Resource removed from public feed');
+      }, 800);
+    });
+
+    // Local Upload Flow with Year Level Prompt Modal
+    document.getElementById('btn-direct-upload').addEventListener('click', () => document.getElementById('direct-upload-input').click());
+    
+    document.getElementById('direct-upload-input').addEventListener('change', (e) => {
+      const files = e.target.files;
+      if(files.length === 0) return;
+      pendingLocalFiles = files;
+      document.getElementById('upload-year-modal').classList.remove('hidden');
+    });
+
+    window.cancelLocalUpload = function() {
+      pendingLocalFiles = null;
+      document.getElementById('upload-year-modal').classList.add('hidden');
+      document.getElementById('direct-upload-input').value = '';
+    };
+
+    window.confirmLocalUploadYear = function(chosenLevel) {
+      const files = pendingLocalFiles;
+      document.getElementById('upload-year-modal').classList.add('hidden');
+      if(!files || files.length === 0) return;
+
+      const defaultSubject = academicCurriculumMapping[chosenLevel][0] || 'Aerospace Engineering Orientation';
+
+      triggerLoader(async () => {
+        let addedCount = 0;
+        for (const file of Array.from(files)) {
+          let format = 'notes';
+          const nameLower = file.name.toLowerCase();
+          if(nameLower.includes('.py') || nameLower.includes('.ipynb') || nameLower.includes('.zip')) format = 'code';
+          else if(nameLower.includes('exam')) format = 'exam';
+          else if(nameLower.includes('report')) format = 'report';
+
+          const newEntry = {
+            id: 'local-' + Date.now() + '-' + Math.floor(Math.random() * 1000),
+            title: file.name,
+            subject: defaultSubject,
+            format: format,
+            level: chosenLevel,
+            author: 'Student Contributor',
+            cloud_url: null
+          };
+
+          resources.unshift(newEntry);
+          try {
+            await supabaseClient.from('resources').insert([newEntry]);
+          } catch(err) {
+            console.error('Supabase insert warning:', err);
+          }
+          addedCount++;
+        }
+        saveResourcesToStorage();
+        updateDisciplineCounts();
+        renderResourceGrid();
+        showToast(`Shared ${addedCount} file(s) to public feed under ${chosenLevel}`);
+        pendingLocalFiles = null;
+        document.getElementById('direct-upload-input').value = '';
+      }, 1000);
+    };
+
+    const submitModal = document.getElementById('submit-modal');
+    document.getElementById('btn-open-submit').addEventListener('click', () => submitModal.classList.remove('hidden'));
+    document.getElementById('btn-close-submit').addEventListener('click', () => submitModal.classList.add('hidden'));
+    document.getElementById('btn-cancel-submit').addEventListener('click', () => submitModal.classList.add('hidden'));
+
+    document.getElementById('resource-submit-form').addEventListener('submit', async (e) => {
+      e.preventDefault();
+      triggerLoader(async () => {
+        const newEntry = {
+          id: 'custom-' + Date.now() + '-' + Math.floor(Math.random() * 1000),
+          title: document.getElementById('sub-title').value.trim(),
+          subject: document.getElementById('sub-subject').value,
+          format: document.getElementById('sub-format').value,
+          level: document.getElementById('sub-level').value,
+          author: document.getElementById('sub-author').value.trim(),
+          cloud_url: document.getElementById('sub-cloudurl').value.trim()
+        };
+
+        resources.unshift(newEntry);
+        try {
+          await supabaseClient.from('resources').insert([newEntry]);
+        } catch(err) {
+          console.error('Supabase submission warning:', err);
+        }
+
+        saveResourcesToStorage();
+        updateDisciplineCounts();
+        renderResourceGrid();
+        submitModal.classList.add('hidden');
+        document.getElementById('resource-submit-form').reset();
+        showToast('Resource shared to public feed successfully');
+      }, 1200);
+    });
+
+    const linkDriveModal = document.getElementById('link-drive-modal');
+    document.getElementById('btn-link-drive').addEventListener('click', () => linkDriveModal.classList.remove('hidden'));
+    document.getElementById('btn-close-linkdrive').addEventListener('click', () => linkDriveModal.classList.add('hidden'));
+    document.getElementById('btn-cancel-linkdrive').addEventListener('click', () => linkDriveModal.classList.add('hidden'));
+
+    document.getElementById('link-drive-form').addEventListener('submit', async (e) => {
+      e.preventDefault();
+      triggerLoader(async () => {
+        const name = document.getElementById('ld-name').value.trim();
+        const folderUrl = document.getElementById('ld-url').value.trim();
+        const owner = document.getElementById('ld-owner').value.trim();
+
+        const newDrive = {
+          id: 'drive-custom-' + Date.now(),
+          name: name,
+          folderUrl: folderUrl,
+          owner: owner + ' (Custom)',
+          modified: 'Custom Link'
+        };
+
+        connectedDrives.push(newDrive);
+        try {
+          await supabaseClient.from('custom_drives').insert([newDrive]);
+        } catch(err) {
+          console.error('Supabase drive sync warning:', err);
+        }
+
+        saveDrivesToStorage();
+        renderCloudManagerStats();
+        renderDriveExplorer();
+        
+        linkDriveModal.classList.add('hidden');
+        document.getElementById('link-drive-form').reset();
+        showToast('Custom Drive Linked to Public Feed');
+      }, 800);
+    });
+
+    document.getElementById('btn-sync-now').addEventListener('click', () => triggerLoader(() => showToast("Public cloud feeds synchronized successfully."), 1500));
+
+    window.addEventListener('click', (e) => {
+      if (e.target === submitModal) submitModal.classList.add('hidden');
+      if (e.target === linkDriveModal) linkDriveModal.classList.add('hidden');
+      if (e.target === document.getElementById('upload-year-modal')) cancelLocalUpload();
+      if (e.target === document.getElementById('delete-confirm-modal')) closeDeleteModal();
+    });
+
+    const smartQuizDictionary = [
+      { q: "In Fluid Mechanics, what does the Reynolds number predict?", options: ["Flow transition", "Speed of sound", "Compressibility limit", "Thermal conductivity"], ans: 0 },
+      { q: "When analyzing Statics, what defines a statically indeterminate structure?", options: ["Sum of all forces equals zero", "Number of unknown reactions exceeds available equilibrium equations", "Lacks adequate supports", "Exhibits dynamic motion"], ans: 1 },
+      { q: "Which law states that entropy of an isolated system always increases?", options: ["Zeroth Law", "First Law", "Second Law", "Third Law"], ans: 2 }
+    ];
+
+    const gizmoFab = document.getElementById('btn-gizmo-fab');
+    const gizmoPanel = document.getElementById('gizmo-panel');
+    let gizmoQuizState = { currentIndex: 0, score: 0 };
+
+    gizmoFab.addEventListener('click', () => {
+      gizmoPanel.classList.toggle('translate-y-10');
+      gizmoPanel.classList.toggle('opacity-0');
+      gizmoPanel.classList.toggle('pointer-events-none');
+      
+      const container = document.getElementById('gizmo-view-select');
+      if(resources.length === 0) {
+        container.innerHTML = `<div class="text-center py-6 text-lavender-300 font-bold text-xs"><i data-lucide="file-warning" class="w-8 h-8 mx-auto mb-2"></i>No materials found to analyze. Upload files first.</div>`;
+      } else {
+        container.innerHTML = `<div class="text-center py-2"><button onclick="triggerSmartQuiz()" class="w-full bg-neonViolet-500 text-white p-3.5 rounded-xl font-bold flex justify-center items-center gap-2">Generate Smart Quiz</button></div>`;
+      }
+      lucide.createIcons();
+    });
+
+    document.getElementById('btn-close-gizmo').addEventListener('click', () => gizmoFab.click());
+
+    window.triggerSmartQuiz = function() {
+      document.getElementById('gizmo-view-select').classList.add('hidden');
+      document.getElementById('gizmo-view-quiz').classList.remove('hidden');
+      gizmoQuizState.currentIndex = 0; gizmoQuizState.score = 0;
+      renderAeroGizQuestion();
+    };
+
+    function renderAeroGizQuestion() {
+      const qData = smartQuizDictionary[gizmoQuizState.currentIndex];
+      document.getElementById('quiz-progress').innerText = `Q ${gizmoQuizState.currentIndex + 1}/3`;
+      document.getElementById('quiz-question-text').innerText = qData.q;
+      
+      document.getElementById('quiz-options-container').innerHTML = qData.options.map((opt, idx) => `
+        <button onclick="handleAeroGizAnswer(${idx})" class="w-full text-left p-3 rounded-xl bg-purpleSpace-950 border border-purpleSpace-700 hover:border-neonViolet-400 hover:bg-neonViolet-500/10 text-lavender-200 transition text-xs flex gap-2"><span class="w-2 h-2 mt-1 rounded-full border border-neonViolet-400"></span>${opt}</button>
+      `).join('');
+    }
+
+    window.handleAeroGizAnswer = function(idx) {
+      if (idx === smartQuizDictionary[gizmoQuizState.currentIndex].ans) gizmoQuizState.score++;
+      gizmoQuizState.currentIndex++;
+      if (gizmoQuizState.currentIndex < 3) renderAeroGizQuestion();
+      else {
+        document.getElementById('gizmo-view-quiz').classList.add('hidden');
+        document.getElementById('gizmo-view-result').classList.remove('hidden');
+        document.getElementById('quiz-score-display').innerText = `${gizmoQuizState.score} / 3`;
+      }
+    };
+
+    window.resetAeroGiz = function() {
+      document.getElementById('gizmo-view-result').classList.add('hidden');
+      document.getElementById('gizmo-view-select').classList.remove('hidden');
+    };
+
+    function showToast(msg) {
+      const toast = document.getElementById('toast-notify');
+      document.getElementById('toast-message').innerText = msg;
+      toast.classList.remove('translate-y-20', 'opacity-0', 'pointer-events-none');
+      setTimeout(() => toast.classList.add('translate-y-20', 'opacity-0', 'pointer-events-none'), 2600);
+    }
+
+    window.addEventListener('DOMContentLoaded', initState);
+  </script>
+
+</body>
+</html>
